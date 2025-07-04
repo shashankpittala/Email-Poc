@@ -51,9 +51,6 @@
 						<secureProperties>
 							<mule.key>openweatherapike</mule.key>
 						</secureProperties>
-						<connectedAppClientId>570b4222d11a49d9b966a140850100cb</connectedAppClientId>
-                <connectedAppClientSecret>845a7C2c9e3c49FE9658F64e4CeC2f4B</connectedAppClientSecret>
-                <connectedAppGrantType>client_credentials</connectedAppGrantType>
 					</cloudhub2Deployment>
 						</configuration>
 			</plugin>
