@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="c44d8cbc-79be-4e32-8be0-9464824ee06f" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<email:smtp-config name="Email_SMTP1" doc:name="Email SMTP" doc:id="8e7cfbf5-3ade-4dfe-b04c-a7ceddf5089a" >
+		<email:smtp-connection host="smtp.gmail.com" user="shashankpittala7@gmail.com" password="fgsx fggd mofu ybbh" >
+			<email:properties >
+				<email:property key="mail.smtp.starttls.enable" value="true" />
+			</email:properties>
+		</email:smtp-connection>
+	</email:smtp-config>
+	<flow name="email-pocFlow" doc:id="8c3bb456-0ccf-4fef-9e36-5cd2f25f9f33" >
+		<http:listener doc:name="Listener" doc:id="a31c078f-09b3-4895-9f74-6d77b78bdb72" config-ref="HTTP_Listener_config" path="/email"/>
+		<ee:transform doc:name="Transform Message" doc:id="5c3b2432-9926-4a05-9326-61e0cb210076" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xlsx header=true
+---
+ {
+    "Sheet1" : payload
+ }
+	
+
+]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="Transform Message" doc:id="4202ff3c-f83c-4857-9215-d190bbf93d46" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xlsx
+---
+ {
+    "ExcelAttachment.xlsx" : [] +  payload
+ }]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<email:send doc:name="Send" doc:id="7fecdd28-3e34-4a21-97eb-2f58ad065abc" config-ref="Email_SMTP1" fromAddress="shashankpittala7@gmail.com" subject="Sample Email">
+			<email:to-addresses >
+				<email:to-address value="shashank.preetham@cloudodyssey.co" />
+			</email:to-addresses>
+			<email:cc-addresses>
+				<email:cc-address value="mohamed.nousheed@cloudodyssey.co" />
+			</email:cc-addresses>
+			<email:reply-to-addresses />
+			<email:body contentType="text/plain" encoding="UTF-8">
+				<email:content ><![CDATA["Failed Records while inserting  in ThomasCook Api details are attached in File "]]></email:content>
+			</email:body>
+			<email:attachments ><![CDATA[#[payload]]]></email:attachments>
+
+		</email:send>
+	</flow>
+	<flow name="email-pocFlow1" doc:id="67c50374-2fc6-4e50-97e1-f1e36d5bdb91" >
+		<http:listener doc:name="Listener" doc:id="aad7d477-e49e-4661-9f27-1abafa84c722" config-ref="HTTP_Listener_config" path="/shashank"/>
+		<ee:transform doc:name="Transform Message" doc:id="6c018796-3f5c-4138-b40a-d4840e50f7a3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xlsx header=true
+---
+
+ {
+		                  "Sheet1" : payload
+}
+	
+
+]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+			</ee:variables>
+		</ee:transform>
+		<!-- [STUDIO:"Transform Message"]<ee:transform doc:name="Transform Message" doc:id="5f78500d-f3b4-48c3-bc82-2fa82c932564" >
+			<ee:message >
+				<ee:set-payload ></ee:set-payload>
+			</ee:message>
+		</ee:transform> [STUDIO] -->
+		<ee:transform doc:name="Transform Message" doc:id="8a7c30ed-0f6d-4129-aa6a-be68ce1f470b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+import * from dw::core::Binaries
+import * from dw::util::Coercions
+output text/plain
+---
+toBase64(payload as Binary)
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="email-pocFlow2" doc:id="2e0483cd-9312-423e-a362-7d4a3089bf5c" >
+		<http:listener doc:name="Listener" doc:id="1810f8e4-8189-4482-a81f-d34cc27f613a" config-ref="HTTP_Listener_config" path="/decode"/>
+		<ee:transform doc:name="Transform Message" doc:id="cf574314-bdf3-4cb6-bdb5-1b3708f577ed" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+import * from dw::core::Binaries
+output application/octet-stream
+---
+fromBase64(payload as String) ]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<email:send doc:name="Send" doc:id="c3d76fda-b4dd-404a-a03b-015f5dd06e36" config-ref="Email_SMTP1" fromAddress="shashankpittala7@gmail.com" subject="Sample Email" >
+			<email:to-addresses >
+				<email:to-address value="shashank.preetham@cloudodyssey.co" />
+			</email:to-addresses>
+			<email:reply-to-addresses />
+			<email:body contentType="text/plain" encoding="UTF-8" >
+				<email:content ><![CDATA["Failed Records while inserting  in ThomasCook Api details are attached in File "]]></email:content>
+			</email:body>
+			<email:attachments ><![CDATA[#[%dw 2.0
+ output application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+
+---
+payload]]]></email:attachments>
+		</email:send>
+	</flow>
+</mule>
