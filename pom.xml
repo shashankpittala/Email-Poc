@@ -37,8 +37,7 @@
 						<environment>Sandbox</environment>
 						<target>Cloudhub-US-East-2</target>
 						<!-- <muleVersion>4.9.6</muleVersion> -->
-					    <username>Manu_456</username>
-                        <password>Srivardhan#04</password>
+					   
 						<applicationName>email-poc</applicationName>
 						<replicas>1</replicas>
 						<vCores>0.1</vCores>
